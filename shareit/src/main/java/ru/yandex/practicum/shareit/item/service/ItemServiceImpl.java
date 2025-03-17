@@ -16,13 +16,20 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
 
     @Override
-    public void addItem(ItemDto itemDto, long userId) {
+    public ItemDto addItem(ItemDto itemDto, long userId) {
+        // Создаем новый объект Item
         Item item = new Item(itemDto.getName(), itemDto.getDescription(), itemDto.isAvailable(), userId);
-        itemRepository.save(item);
+        // Сохраняем в репозитории
+        item = itemRepository.save(item);
+
+        // Можно добавить дополнительные операции, например, обновление других сущностей
+
+        // Возвращаем ItemDto с данными сохраненной вещи
+        return new ItemDto(item.getName(), item.getDescription(), item.isAvailable());
     }
 
     @Override
-    public void editItem(long itemId, ItemDto itemDto, long userId) {
+    public ItemDto editItem(long itemId, ItemDto itemDto, long userId) {
         Item item = itemRepository.findById(itemId);
 
         // Проверка, что пользователь является владельцем
@@ -35,6 +42,8 @@ public class ItemServiceImpl implements ItemService {
         item.setAvailable(itemDto.isAvailable());
 
         itemRepository.save(item);
+
+        return itemDto;
     }
 
     @Override

@@ -64,11 +64,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!--		&lt;!&ndash; Spring Boot Starter Data JPA (для работы с MySQL через Hibernate) &ndash;&gt;-->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.boot</groupId>-->
-		<!--			<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-		<!--		</dependency>-->
+		<!-- Spring Boot Starter Data JPA (для работы с MySQL через Hibernate) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

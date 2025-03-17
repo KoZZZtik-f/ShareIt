@@ -2,6 +2,7 @@ package ru.yandex.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.shareit.item.repository.ItemRepository;
 import ru.yandex.practicum.shareit.item.dto.ItemDto;
 import ru.yandex.practicum.shareit.item.model.Item;
@@ -15,6 +16,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
 
+//    @Transactional
     @Override
     public ItemDto addItem(ItemDto itemDto, long userId) {
         // Создаем новый объект Item
@@ -28,6 +30,7 @@ public class ItemServiceImpl implements ItemService {
         return new ItemDto(item.getName(), item.getDescription(), item.isAvailable());
     }
 
+//    @Transactional
     @Override
     public ItemDto editItem(long itemId, ItemDto itemDto, long userId) {
         Item item = itemRepository.findById(itemId);
@@ -62,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItems(String text) {
-        List<Item> items = itemRepository.findByContainingText(text, text);
+        List<Item> items = itemRepository.findByNameContainingOrDescriptionContaining(text, text);
         return items.stream()
                 .map(item -> new ItemDto(item.getName(), item.getDescription(), item.isAvailable()))
                 .collect(Collectors.toList());

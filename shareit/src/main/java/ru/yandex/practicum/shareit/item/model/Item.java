@@ -1,6 +1,7 @@
 package ru.yandex.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,13 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Name cannot be null")
     private String name;
 
+    @NotNull(message = "Description cannot be null")
     private String description;
 
+    @NotNull(message = "Availability cannot be null")
     private boolean available;
 
     @Column(name = "owner_id")

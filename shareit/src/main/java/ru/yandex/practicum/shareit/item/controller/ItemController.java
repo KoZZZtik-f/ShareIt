@@ -16,17 +16,17 @@ public class ItemController {
 
     // 1. Добавление новой вещи
     @PostMapping
-    public void addItem(@RequestBody ItemDto itemDto,
-                        @RequestHeader("X-Shared-User-ID") long userId) {
-        itemService.addItem(itemDto, userId);
+    public ItemDto addItem(@RequestBody ItemDto itemDto,
+                           @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.addItem(itemDto, userId); // Возвращаем ItemDto после создания
     }
 
     // 2. Редактирование вещи
     @PatchMapping("/{itemId}")
-    public void editItem(@PathVariable long itemId,
+    public ItemDto editItem(@PathVariable long itemId,
                          @RequestBody ItemDto itemDto,
-                         @RequestHeader("X-Shared-User-ID") long userId) {
-        itemService.editItem(itemId, itemDto, userId);
+                         @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.editItem(itemId, itemDto, userId);
     }
 
     // 3. Просмотр информации о вещи
@@ -37,7 +37,7 @@ public class ItemController {
 
     // 4. Просмотр списка вещей владельцем
     @GetMapping("/owner")
-    public List<ItemDto> getItemsByOwner(@RequestHeader("X-Shared-User-ID") long userId) {
+    public List<ItemDto> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getItemsByOwner(userId);
     }
 

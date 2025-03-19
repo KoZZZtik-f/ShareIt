@@ -6,9 +6,11 @@ import ru.yandex.practicum.shareit.item.model.Item;
 import ru.yandex.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "bookings")
 @Data
+@Builder
 public class Booking {
 
     @Id

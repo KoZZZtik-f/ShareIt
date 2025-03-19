@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.yandex.practicum.shareit.booking.model.Booking;
+import ru.yandex.practicum.shareit.user.model.User;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,8 +34,11 @@ public class Item {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    // Конструктор без ID
-    public Item(String name, String description, boolean available, long ownerId) {
+    @OneToMany(mappedBy = "item")
+    private List<Booking> bookings;
+
+    // Конструктор без ID и bookings
+    public Item(String name, String description, Boolean available, User owner) {
         this.name = name;
         this.description = description;
         this.available = available;

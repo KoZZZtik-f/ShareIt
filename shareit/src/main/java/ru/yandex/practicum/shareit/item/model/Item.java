@@ -28,7 +28,7 @@ public class Item {
     private String description;
 
     @NotNull(message = "Availability cannot be null")
-    private boolean available;
+    private Boolean available;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

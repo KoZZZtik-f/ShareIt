@@ -26,14 +26,15 @@ public class Item {
     @NotNull(message = "Availability cannot be null")
     private boolean available;
 
-    @Column(name = "owner_id")
-    private long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     // Конструктор без ID
     public Item(String name, String description, boolean available, long ownerId) {
         this.name = name;
         this.description = description;
         this.available = available;
-        this.ownerId = ownerId;
+        this.owner = owner;
     }
 }

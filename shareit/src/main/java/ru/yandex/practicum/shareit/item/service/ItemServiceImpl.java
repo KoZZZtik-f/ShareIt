@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.shareit.item.repository.ItemRepository;
 import ru.yandex.practicum.shareit.item.dto.ItemDto;
+import ru.yandex.practicum.shareit.item.mapper.ItemMapper;
 import ru.yandex.practicum.shareit.item.model.Item;
+import ru.yandex.practicum.shareit.user.model.User;
+import ru.yandex.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,19 +18,14 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final UserService userService;
 
 //    @Transactional
     @Override
     public ItemDto addItem(ItemDto itemDto, long userId) {
-        // Создаем новый объект Item
-        Item item = new Item(itemDto.getName(), itemDto.getDescription(), itemDto.isAvailable(), userId);
-        // Сохраняем в репозитории
-        item = itemRepository.save(item);
-
-        // Можно добавить дополнительные операции, например, обновление других сущностей
-
-        // Возвращаем ItemDto с данными сохраненной вещи
-        return new ItemDto(item.getName(), item.getDescription(), item.isAvailable());
+        User owner = userService.getUserById(userId);
+        Item item = ItemMapper.toEntity(itemDto, owner);
+        return ItemMapper.toDto(itemRepository.save(item));
     }
 
 //    @Transactional

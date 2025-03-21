@@ -15,6 +15,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    // Преобразование сущности в DTO
     private UserDto mapToDto(User user) {
         if (user == null) {
             return null;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
         return new UserDto(user.getId(), user.getName());
     }
 
+    // Преобразование DTO в сущность
     private User mapToEntity(UserDto userDto) {
         User user = new User();
         if (userDto != null) {

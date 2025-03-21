@@ -1,5 +1,6 @@
 package ru.yandex.practicum.shareit.item.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +32,10 @@ public class ItemServiceImpl implements ItemService {
 //    @Transactional
     @Override
     public ItemDto editItem(long itemId, ItemDto itemDto, long userId) {
-        Item item = itemRepository.findById(itemId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + itemId));
 
-        // Проверка, что пользователь является владельцем
-        if (item.getOwnerId() != userId) {
+        if (!item.getOwner().getId().equals(userId)) {
             throw new IllegalArgumentException("User is not the owner of the item");
         }
 

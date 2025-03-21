@@ -55,17 +55,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemsByOwner(long userId) {
-        List<Item> items = itemRepository.findByOwnerId(userId);
-        return items.stream()
-                .map(item -> new ItemDto(item.getName(), item.getDescription(), item.isAvailable()))
+        return itemRepository.findByOwnerId(userId).stream()
+                .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> searchItems(String text) {
-        List<Item> items = itemRepository.findByNameContainingOrDescriptionContaining(text, text);
-        return items.stream()
-                .map(item -> new ItemDto(item.getName(), item.getDescription(), item.isAvailable()))
+        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text).stream()
+                .filter(Item::getAvailable)
+                .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

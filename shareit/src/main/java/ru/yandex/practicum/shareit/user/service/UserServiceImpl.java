@@ -23,12 +23,8 @@ public class UserServiceImpl implements UserService {
     // Преобразование DTO в сущность
     private User mapToEntity(UserDto userDto) {
         User user = new User();
-        if (userDto != null) {
-            user.setId(userDto.getId());
-            user.setName(userDto.getName());
-        } else {
-            user.setName("Unknown");
-        }
+        user.setId(userDto.getId());
+        user.setName(userDto.getName());
         return user;
     }
 
@@ -57,12 +53,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDtos = new ArrayList<>();
-        for (User user : users) {
-            userDtos.add(mapToDto(user));
-        }
-        return userDtos;
+        return userRepository.findAll().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override

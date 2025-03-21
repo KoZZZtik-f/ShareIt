@@ -17,9 +17,6 @@ public class UserServiceImpl implements UserService {
 
     // Преобразование сущности в DTO
     private UserDto mapToDto(User user) {
-        if (user == null) {
-            return null;
-        }
         return new UserDto(user.getId(), user.getName());
     }
 
@@ -37,9 +34,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        if (userDto == null) {
-            throw new RuntimeException("UserDto cannot be null");
-        }
         User user = mapToEntity(userDto);
         user = userRepository.save(user);
         return mapToDto(user);
@@ -47,9 +41,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
-        if (id == null || userDto == null) {
-            throw new RuntimeException("ID or UserDto cannot be null");
-        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setName(userDto.getName());
@@ -59,9 +50,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        if (id == null) {
-            throw new RuntimeException("ID cannot be null");
-        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return mapToDto(user);
@@ -79,9 +67,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        if (id == null) {
-            throw new RuntimeException("ID cannot be null");
-        }
         userRepository.deleteById(id);
     }
 }

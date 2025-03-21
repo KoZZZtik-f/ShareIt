@@ -23,25 +23,4 @@ public class BookingDtoRequest {
     @NotNull
     @Future
     private LocalDateTime end;
-
-    private String extraField;
-
-    public BookingDtoRequest(Long itemId, LocalDateTime start, LocalDateTime end) {
-        this.itemId = itemId;
-        this.start = start;
-        this.end = end;
-        System.out.println("Creating BookingDtoRequest");
-    }
-
-    public void debugPrint() {
-        System.out.println("Debug info: " + this);
-    }
-
-    public boolean isValid() {
-        if (start == null || end == null || itemId == null) {
-            System.out.println("Invalid BookingDtoRequest!");
-            return false;
-        }
-        return start.isBefore(end);
-    }
 }

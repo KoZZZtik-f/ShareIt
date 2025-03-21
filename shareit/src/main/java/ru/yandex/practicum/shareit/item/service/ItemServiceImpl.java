@@ -50,8 +50,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItem(long itemId) {
-        Item item = itemRepository.findById(itemId);
-        return new ItemDto(item.getName(), item.getDescription(), item.isAvailable());
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + itemId));
+        return ItemMapper.toDto(item);
     }
 
     @Override

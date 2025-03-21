@@ -9,20 +9,13 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
+    // Для пользователя
     List<Booking> findByBookerIdOrderByStartDesc(Long bookerId);
 
     @Query("SELECT b FROM Booking b WHERE "
             + "(:userId = b.booker.id) AND "
             + "(CURRENT_TIMESTAMP BETWEEN b.start AND b.end)")
-    default List<Booking> findCurrentByBooker(Long userId) {
-        System.out.println("Calling findCurrentByBooker with userId: " + userId);
-        return findCurrentByBookerQuery(userId);
-    }
-
-    @Query("SELECT b FROM Booking b WHERE "
-            + "(:userId = b.booker.id) AND "
-            + "(CURRENT_TIMESTAMP BETWEEN b.start AND b.end)")
-    List<Booking> findCurrentByBookerQuery(Long userId);
+    List<Booking> findCurrentByBooker(Long userId);
 
     @Query("SELECT b FROM Booking b WHERE "
             + "(:userId = b.booker.id) AND "
@@ -36,20 +29,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBookerIdAndStatusOrderByStartDesc(Long bookerId, BookingStatus status);
 
+    // Для владельца
     List<Booking> findByItemOwnerIdOrderByStartDesc(Long ownerId);
 
     @Query("SELECT b FROM Booking b WHERE "
             + "(:ownerId = b.item.owner.id) AND "
             + "(CURRENT_TIMESTAMP BETWEEN b.start AND b.end)")
-    default List<Booking> findCurrentByOwner(Long ownerId) {
-        System.out.println("Calling findCurrentByOwner with ownerId: " + ownerId);
-        return findCurrentByOwnerQuery(ownerId);
-    }
-
-    @Query("SELECT b FROM Booking b WHERE "
-            + "(:ownerId = b.item.owner.id) AND "
-            + "(CURRENT_TIMESTAMP BETWEEN b.start AND b.end)")
-    List<Booking> findCurrentByOwnerQuery(Long ownerId);
+    List<Booking> findCurrentByOwner(Long ownerId);
 
     @Query("SELECT b FROM Booking b WHERE "
             + "(:ownerId = b.item.owner.id) AND "
@@ -62,8 +48,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findFutureByOwner(Long ownerId);
 
     List<Booking> findByItemOwnerIdAndStatusOrderByStartDesc(Long ownerId, BookingStatus status);
-
-    default void debugPrint() {
-        System.out.println("BookingRepository debugPrint called");
-    }
 }

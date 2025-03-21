@@ -41,11 +41,9 @@ public class ItemServiceImpl implements ItemService {
 
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
-        item.setAvailable(itemDto.isAvailable());
+        item.setAvailable(itemDto.getAvailable());
 
-        itemRepository.save(item);
-
-        return itemDto;
+        return ItemMapper.toDto(itemRepository.save(item));
     }
 
     @Override

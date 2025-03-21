@@ -16,6 +16,7 @@ public class BookingMapper {
                 .start(dto.getStart())
                 .end(dto.getEnd())
                 .item(item)
+                .booker(booker)
                 .status(BookingStatus.WAITING)
                 .build();
     }
@@ -27,6 +28,7 @@ public class BookingMapper {
                 .end(booking.getEnd())
                 .status(booking.getStatus())
                 .item(toItemDto(booking.getItem())) // Маппинг Item в ItemDto
+                .booker(toUserDto(booking.getBooker())) // Маппинг User в UserDto
                 .build();
     }
 

@@ -21,50 +21,46 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
 
-//    @Transactional
     @Override
-    public ItemDto addItem(ItemDto itemDto, long userId) {
+    public Item addItem(Item item, long userId) { // Параметр Item вместо ItemDto
         User owner = userService.getUserById(userId);
-        Item item = ItemMapper.toEntity(itemDto, owner);
-        return ItemMapper.toDto(itemRepository.save(item));
+        item.setOwner(owner); // Устанавливаем владельца
+        return itemRepository.save(item); // Возвращаем сущность
     }
 
-//    @Transactional
     @Override
-    public ItemDto editItem(long itemId, ItemDto itemDto, long userId) {
+    public Item editItem(long itemId, Item updatedItem, long userId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + itemId));
+                .orElseThrow(() -> new EntityNotFoundException("Item not found"));
 
         if (!item.getOwner().getId().equals(userId)) {
-            throw new IllegalArgumentException("User is not the owner of the item");
+            throw new IllegalArgumentException("User is not the owner");
         }
 
-        item.setName(itemDto.getName());
-        item.setDescription(itemDto.getDescription());
-        item.setAvailable(itemDto.getAvailable());
+        // Обновляем только переданные поля
+        if (updatedItem.getName() != null) item.setName(updatedItem.getName());
+        if (updatedItem.getDescription() != null) item.setDescription(updatedItem.getDescription());
+        if (updatedItem.getAvailable() != null) item.setAvailable(updatedItem.getAvailable());
 
-        return ItemMapper.toDto(itemRepository.save(item));
+        return itemRepository.save(item); // Возвращаем сущность
     }
 
     @Override
-    public ItemDto getItem(long itemId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + itemId));
-        return ItemMapper.toDto(item);
+    public Item getItem(long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found"));
     }
 
     @Override
-    public List<ItemDto> getItemsByOwner(long userId) {
-        return itemRepository.findByOwnerId(userId).stream()
-                .map(ItemMapper::toDto)
-                .collect(Collectors.toList());
+    public List<Item> getItemsByOwner(long userId) {
+        return itemRepository.findByOwnerId(userId); // Без преобразования в DTO
     }
 
     @Override
-    public List<ItemDto> searchItems(String text) {
-        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text).stream()
+    public List<Item> searchItems(String text) {
+        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text)
+                .stream()
                 .filter(Item::getAvailable)
-                .map(ItemMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // Возвращаем список моделей
     }
 }

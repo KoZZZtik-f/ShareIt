@@ -1,14 +1,14 @@
 package ru.yandex.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.shareit.user.dto.UserDto;
+import ru.yandex.practicum.shareit.user.exception.DuplicateEmailException;
+import ru.yandex.practicum.shareit.user.exception.UserNotFoundException;
 import ru.yandex.practicum.shareit.user.model.User;
 import ru.yandex.practicum.shareit.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

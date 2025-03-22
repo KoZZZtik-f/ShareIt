@@ -58,4 +58,12 @@ public class ItemController {
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+//    // 6. Получение всех вещей
+//    @GetMapping
+//    public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
+//        return itemService.getAllItems().stream()
+//                .map(ItemMapper::toDto)
+//                .collect(Collectors.toList());
+//    }
 }

@@ -32,7 +32,7 @@ public class DatabaseCleanupService {
                     .filter(query -> !query.isEmpty()) // Игнорирование пустых строк
                     .forEach(jdbcTemplate::execute);
 
-            System.out.println("Database cleanup completed successfully.");
+            System.out.println("Database cleanup completed successfully. (DatabaseCleanupService)");
         } catch (Exception e) {
             System.err.println("Failed to cleanup database: " + e.getMessage());
             e.printStackTrace();

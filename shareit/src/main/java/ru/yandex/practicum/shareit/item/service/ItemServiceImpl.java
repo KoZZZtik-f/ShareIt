@@ -24,7 +24,7 @@ public class ItemServiceImpl implements ItemService {
     public Item addItem(Item item, long userId) {
         User owner = userService.getUserById(userId);
         item.setOwner(owner); // Устанавливаем владельца
-        return itemRepository.save(item); // Возвращаем сущность
+        return itemRepository.save(item);
     }
 
     @Override
@@ -66,4 +66,11 @@ public class ItemServiceImpl implements ItemService {
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }
+
+//    @Override
+//    public List<Item> getAllItems() {
+//        return itemRepository.findAll();
+//    }
+
+
 }

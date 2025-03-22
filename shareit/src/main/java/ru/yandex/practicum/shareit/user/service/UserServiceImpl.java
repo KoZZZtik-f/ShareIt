@@ -18,11 +18,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        try {
-            return userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
+        // Проверяем, существует ли пользователь с таким email
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new DuplicateEmailException("Пользователь с email " + user.getEmail() + " уже существует.");
         }
+        return userRepository.save(user);
     }
 
     @Override

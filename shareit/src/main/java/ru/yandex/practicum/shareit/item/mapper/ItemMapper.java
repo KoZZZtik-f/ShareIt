@@ -10,7 +10,8 @@ public class ItemMapper {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable()
+                item.getAvailable(),
+                item.getOwner().getId()
         );
     }
 
@@ -19,7 +20,7 @@ public class ItemMapper {
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
-                null // Владелец устанавливается в сервисе
+                null
         );
     }
 }

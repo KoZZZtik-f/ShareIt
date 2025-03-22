@@ -16,19 +16,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    // Преобразование сущности в DTO
-    private UserDto mapToDto(User user) {
-        return new UserDto(user.getId(), user.getName());
-    }
-
-    // Преобразование DTO в сущность
-    private User mapToEntity(UserDto userDto) {
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setName(userDto.getName());
-        return user;
-    }
-
     @Override
     public User createUser(User user) {
         return userRepository.save(user);

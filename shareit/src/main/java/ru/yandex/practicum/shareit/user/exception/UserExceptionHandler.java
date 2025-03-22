@@ -10,7 +10,7 @@ public class UserExceptionHandler {
 
     // Обработка дублирования email
     @ExceptionHandler(DuplicateEmailException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND) // 409 Conflict
+    @ResponseStatus(HttpStatus.CONFLICT) // 409 Conflict
     public String handleDublicateEmailException(DuplicateEmailException ex) {
         return ex.getMessage();
     }

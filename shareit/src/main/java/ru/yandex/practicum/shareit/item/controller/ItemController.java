@@ -44,7 +44,7 @@ public class ItemController {
     }
 
     // 4. Просмотр списка вещей владельцем
-    @GetMapping("/owner")
+    @GetMapping()
     public List<ItemDto> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getItemsByOwner(userId).stream()
                 .map(ItemMapper::toDto)

@@ -3,9 +3,12 @@ package ru.yandex.practicum.shareit.item.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.shareit.item.dto.ItemDto;
+import ru.yandex.practicum.shareit.item.mapper.ItemMapper;
+import ru.yandex.practicum.shareit.item.model.Item;
 import ru.yandex.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/items")
@@ -18,32 +21,41 @@ public class ItemController {
     @PostMapping
     public ItemDto addItem(@RequestBody ItemDto itemDto,
                            @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.addItem(itemDto, userId); // Возвращаем ItemDto после создания
+        Item item = ItemMapper.toEntity(itemDto);
+        Item createdItem = itemService.addItem(item, userId);
+        return ItemMapper.toDto(createdItem);
     }
 
     // 2. Редактирование вещи
     @PatchMapping("/{itemId}")
     public ItemDto editItem(@PathVariable long itemId,
-                         @RequestBody ItemDto itemDto,
-                         @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.editItem(itemId, itemDto, userId);
+                            @RequestBody ItemDto itemDto,
+                            @RequestHeader("X-Sharer-User-Id") long userId) {
+        Item item = ItemMapper.toEntity(itemDto);
+        Item updatedItem = itemService.editItem(itemId, item, userId);
+        return ItemMapper.toDto(updatedItem);
     }
 
     // 3. Просмотр информации о вещи
     @GetMapping("/{itemId}")
     public ItemDto getItem(@PathVariable long itemId) {
-        return itemService.getItem(itemId);
+        Item item = itemService.getItem(itemId);
+        return ItemMapper.toDto(item);
     }
 
     // 4. Просмотр списка вещей владельцем
     @GetMapping("/owner")
     public List<ItemDto> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getItemsByOwner(userId);
+        return itemService.getItemsByOwner(userId).stream()
+                .map(ItemMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     // 5. Поиск вещей по тексту
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam("text") String text) {
-        return itemService.searchItems(text);
+        return itemService.searchItems(text).stream()
+                .map(ItemMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

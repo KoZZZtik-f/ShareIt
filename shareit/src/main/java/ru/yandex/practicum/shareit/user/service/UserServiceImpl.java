@@ -30,33 +30,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createUser(UserDto userDto) {
-        User user = mapToEntity(userDto);
-        user = userRepository.save(user);
-        return mapToDto(user);
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setName(userDto.getName());
-        user = userRepository.save(user);
-        return mapToDto(user);
+    public User updateUser(Long id, User user) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден."));
+
+        if (user.getEmail() != null) {
+            existingUser.setEmail(user.getEmail());
+        }
+        if (user.getName() != null) {
+            existingUser.setName(user.getName());
+        }
+
+        return userRepository.save(existingUser);
     }
 
     @Override
-    public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return mapToDto(user);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден."));
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override

@@ -3,11 +3,8 @@ package ru.yandex.practicum.shareit.item.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.shareit.item.repository.ItemRepository;
-import ru.yandex.practicum.shareit.item.dto.ItemDto;
-import ru.yandex.practicum.shareit.item.mapper.ItemMapper;
 import ru.yandex.practicum.shareit.item.model.Item;
+import ru.yandex.practicum.shareit.item.repository.ItemRepository;
 import ru.yandex.practicum.shareit.user.model.User;
 import ru.yandex.practicum.shareit.user.service.UserService;
 

@@ -4,9 +4,9 @@ import ru.yandex.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.yandex.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.yandex.practicum.shareit.booking.model.Booking;
 import ru.yandex.practicum.shareit.booking.model.BookingStatus;
-import ru.yandex.practicum.shareit.item.dto.ItemDto;
+import ru.yandex.practicum.shareit.item.mapper.ItemMapper;
 import ru.yandex.practicum.shareit.item.model.Item;
-import ru.yandex.practicum.shareit.user.dto.UserDto;
+import ru.yandex.practicum.shareit.user.mapper.UserMapper;
 import ru.yandex.practicum.shareit.user.model.User;
 
 public class BookingMapper {
@@ -27,23 +27,8 @@ public class BookingMapper {
                 .start(booking.getStart())
                 .end(booking.getEnd())
                 .status(booking.getStatus())
-                .item(toItemDto(booking.getItem())) // Маппинг Item в ItemDto
-                .booker(toUserDto(booking.getBooker())) // Маппинг User в UserDto
+                .item(ItemMapper.toDto(booking.getItem())) // Используем ItemMapper
+                .booker(UserMapper.toDto(booking.getBooker())) // Используем UserMapper
                 .build();
-    }
-
-    private static ItemDto toItemDto(Item item) {
-        return new ItemDto(
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable()
-        );
-    }
-
-    private static UserDto toUserDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getName()
-        );
     }
 }

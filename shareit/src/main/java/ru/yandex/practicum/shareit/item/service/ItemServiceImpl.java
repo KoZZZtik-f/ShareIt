@@ -3,6 +3,8 @@ package ru.yandex.practicum.shareit.item.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.yandex.practicum.shareit.item.exception.PermissionDeniedException;
 import ru.yandex.practicum.shareit.item.model.Item;
 import ru.yandex.practicum.shareit.item.repository.ItemRepository;
 import ru.yandex.practicum.shareit.user.model.User;
@@ -28,10 +30,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item editItem(long itemId, Item updatedItem, long userId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found"));
+                .orElseThrow(() -> new ItemNotFoundException());
 
+        // Проверяем, является ли пользователь владельцем
         if (!item.getOwner().getId().equals(userId)) {
-            throw new IllegalArgumentException("User is not the owner");
+            throw new PermissionDeniedException("User with id " + userId + " is not the owner of item " + itemId);
         }
 
         // Обновляем только переданные поля
@@ -45,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item getItem(long itemId) {
         return itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found"));
+                .orElseThrow(() -> new ItemNotFoundException());
     }
 
     @Override

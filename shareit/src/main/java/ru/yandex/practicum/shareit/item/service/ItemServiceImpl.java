@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
 
     @Override
-    public Item addItem(Item item, long userId) { // Параметр Item вместо ItemDto
+    public Item addItem(Item item, long userId) {
         User owner = userService.getUserById(userId);
         item.setOwner(owner); // Устанавливаем владельца
         return itemRepository.save(item); // Возвращаем сущность
@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemsByOwner(long userId) {
-        return itemRepository.findByOwnerId(userId); // Без преобразования в DTO
+        return itemRepository.findByOwnerId(userId);
     }
 
     @Override
@@ -61,6 +61,6 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text)
                 .stream()
                 .filter(Item::getAvailable)
-                .collect(Collectors.toList()); // Возвращаем список моделей
+                .collect(Collectors.toList());
     }
 }

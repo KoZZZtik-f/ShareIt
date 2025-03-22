@@ -39,6 +39,9 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Booking> bookings;
 
+    @OneToMany(mappedBy = "item")
+    private List<Comment> comments;
+
     // Конструктор без ID и bookings
     public Item(String name, String description, Boolean available, User owner) {
         this.name = name;

@@ -18,7 +18,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEmailException("Пользователь с email " + user.getEmail() + " уже существует.");
+        }
     }
 
     @Override
@@ -33,7 +37,11 @@ public class UserServiceImpl implements UserService {
             existingUser.setName(user.getName());
         }
 
-        return userRepository.save(existingUser);
+        try {
+            return userRepository.save(existingUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEmailException("Пользователь с email " + user.getEmail() + " уже существует.");
+        }
     }
 
     @Override

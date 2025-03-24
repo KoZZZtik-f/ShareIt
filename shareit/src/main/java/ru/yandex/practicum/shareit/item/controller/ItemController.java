@@ -2,8 +2,11 @@ package ru.yandex.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.shareit.item.dto.CommentResponse;
 import ru.yandex.practicum.shareit.item.dto.ItemDto;
+import ru.yandex.practicum.shareit.item.mapper.CommentMapper;
 import ru.yandex.practicum.shareit.item.mapper.ItemMapper;
+import ru.yandex.practicum.shareit.item.model.Comment;
 import ru.yandex.practicum.shareit.item.model.Item;
 import ru.yandex.practicum.shareit.item.service.ItemService;
 
@@ -57,6 +60,15 @@ public class ItemController {
         return itemService.searchItems(text).stream()
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponse addComment(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam("text") String text,
+            @PathVariable long itemId) {
+        Comment comment = itemService.addComment(itemId, text, userId);
+        return CommentMapper.toCommentResponse(comment); // Добавлено преобразование
     }
 
 //    // 6. Получение всех вещей

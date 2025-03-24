@@ -1,5 +1,6 @@
 package ru.yandex.practicum.shareit.item.service;
 
+import ru.yandex.practicum.shareit.item.model.Comment;
 import ru.yandex.practicum.shareit.item.model.Item;
 import java.util.List;
 
@@ -10,4 +11,6 @@ public interface ItemService {
     List<Item> getItemsByOwner(long userId);
     List<Item> searchItems(String text);
 //    List<Item> getAllItems();
+    Comment addComment(long itemId, String text, long userId);
+
 }

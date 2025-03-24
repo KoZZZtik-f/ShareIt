@@ -3,13 +3,16 @@ package ru.yandex.practicum.shareit.item.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.shareit.exception.PermissionDeniedException;
 import ru.yandex.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.yandex.practicum.shareit.item.exception.PermissionDeniedException;
+import ru.yandex.practicum.shareit.item.model.Comment;
 import ru.yandex.practicum.shareit.item.model.Item;
+import ru.yandex.practicum.shareit.item.repository.CommentRepository;
 import ru.yandex.practicum.shareit.item.repository.ItemRepository;
 import ru.yandex.practicum.shareit.user.model.User;
 import ru.yandex.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final CommentRepository commentRepository;
 
     @Override
     public Item addItem(Item item, long userId) {
@@ -66,6 +70,21 @@ public class ItemServiceImpl implements ItemService {
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Comment addComment(long itemId, String text, long userId) {
+        Item item = getItem(itemId); // Получаем вещь по ID
+        User author = userService.getUserById(userId); // Получаем пользователя по ID
+
+        Comment comment = new Comment();
+        comment.setText(text);
+        comment.setItem(item);
+        comment.setAuthor(author);
+        comment.setCreated(LocalDateTime.now());
+
+        return commentRepository.save(comment);
+    }
+
 
 //    @Override
 //    public List<Item> getAllItems() {

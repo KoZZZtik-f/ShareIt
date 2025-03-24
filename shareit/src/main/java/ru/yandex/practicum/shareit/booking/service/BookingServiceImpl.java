@@ -30,51 +30,43 @@ public class BookingServiceImpl implements BookingService {
     private final UserService userService;
 
     @Override
-    public BookingDtoResponse createBooking(BookingDtoRequest bookingDtoRequest, Long userId) {
+    public Booking createBooking(BookingDtoRequest bookingDtoRequest, Long userId) {
         User booker = userService.getUserById(userId);
         Item item = itemService.getItem(bookingDtoRequest.getItemId());
 
         validateBookingCreation(item, userId);
 
-        Booking booking = BookingMapper.toEntity(bookingDtoRequest, item, booker);
-        Booking savedBooking = bookingRepository.save(booking);
-        return BookingMapper.toDto(savedBooking);
+        return bookingRepository.save(BookingMapper.toEntity(bookingDtoRequest, item, booker));
     }
 
     @Override
-    public BookingDtoResponse approveBooking(Long bookingId, Long userId, boolean approved) {
+    public Booking approveBooking(Long bookingId, Long userId, boolean approved) {
         Booking booking = getBookingById(bookingId);
 
         validateBookingApproval(booking, userId);
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        Booking updatedBooking = bookingRepository.save(booking);
-        return BookingMapper.toDto(updatedBooking);
+        return bookingRepository.save(booking);
     }
 
     @Override
-    public BookingDtoResponse getBooking(Long bookingId, Long userId) {
+    public Booking getBooking(Long bookingId, Long userId) {
         Booking booking = getBookingById(bookingId);
 
         validateBookingAccess(booking, userId);
-
-        return BookingMapper.toDto(booking);
+        return booking;
     }
 
     @Override
-    public List<BookingDtoResponse> getUserBookings(Long userId, State state, int from, int size) {
+    public List<Booking> getUserBookings(Long userId, State state, int from, int size) {
         userService.getUserById(userId); // Проверяем, что пользователь существует
-
-        List<Booking> bookings = getBookingsByState(userId, state, true);
-        return paginateAndMapToDto(bookings, from, size);
+        return paginate(getBookingsByState(userId, state, true), from, size);
     }
 
     @Override
-    public List<BookingDtoResponse> getOwnerBookings(Long ownerId, State state, int from, int size) {
+    public List<Booking> getOwnerBookings(Long ownerId, State state, int from, int size) {
         userService.getUserById(ownerId); // Проверяем, что владелец существует
-
-        List<Booking> bookings = getBookingsByState(ownerId, state, false);
-        return paginateAndMapToDto(bookings, from, size);
+        return paginate(getBookingsByState(ownerId, state, false), from, size);
     }
 
     // Вспомогательные методы
@@ -139,11 +131,10 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private List<BookingDtoResponse> paginateAndMapToDto(List<Booking> bookings, int from, int size) {
+    private List<Booking> paginate(List<Booking> bookings, int from, int size) {
         return bookings.stream()
                 .skip(from)
                 .limit(size)
-                .map(BookingMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

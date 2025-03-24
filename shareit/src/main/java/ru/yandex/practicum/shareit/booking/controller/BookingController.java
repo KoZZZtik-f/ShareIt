@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.yandex.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.yandex.practicum.shareit.booking.mapper.BookingMapper;
+import ru.yandex.practicum.shareit.booking.model.Booking;
 import ru.yandex.practicum.shareit.booking.model.State;
 import ru.yandex.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bookings")
@@ -20,7 +23,8 @@ public class BookingController {
     public BookingDtoResponse createBooking(
             @RequestBody BookingDtoRequest bookingDtoRequest,
             @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.createBooking(bookingDtoRequest, userId);
+        Booking booking = bookingService.createBooking(bookingDtoRequest, userId);
+        return BookingMapper.toDto(booking);
     }
 
     @PatchMapping("/{bookingId}")
@@ -28,14 +32,16 @@ public class BookingController {
             @PathVariable Long bookingId,
             @RequestParam boolean approved,
             @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.approveBooking(bookingId, userId, approved);
+        Booking booking = bookingService.approveBooking(bookingId, userId, approved);
+        return BookingMapper.toDto(booking);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDtoResponse getBookingById(
             @PathVariable Long bookingId,
             @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.getBooking(bookingId, userId);
+        Booking booking = bookingService.getBooking(bookingId, userId);
+        return BookingMapper.toDto(booking);
     }
 
     @GetMapping
@@ -44,7 +50,10 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
-        return bookingService.getUserBookings(userId, state, from, size);
+        List<Booking> bookings = bookingService.getUserBookings(userId, state, from, size);
+        return bookings.stream()
+                .map(BookingMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/owner")
@@ -53,6 +62,9 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
-        return bookingService.getOwnerBookings(userId, state, from, size);
+        List<Booking> bookings = bookingService.getOwnerBookings(userId, state, from, size);
+        return bookings.stream()
+                .map(BookingMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

@@ -39,7 +39,7 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Booking> bookings;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     private List<Comment> comments;
 
     // Конструктор без ID и bookings

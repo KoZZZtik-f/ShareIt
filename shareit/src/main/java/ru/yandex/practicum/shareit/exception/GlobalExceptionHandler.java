@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AvailabilityException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAvailabilityException(AvailabilityException e) {
         return new ErrorResponse(e);
     }
 
     @ExceptionHandler(PermissionDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlePermissionDeniedException(PermissionDeniedException e) {
         return new ErrorResponse(e);
     }

@@ -20,4 +20,16 @@ public class BookingExceptionHandler {
     public ErrorResponse handleInvalidStatusException(InvalidStatusException e) {
         return new ErrorResponse(e);
     }
+
+    @ExceptionHandler(UnsupportedStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUnsupportedStateException(UnsupportedStateException e) {
+        return new ErrorResponse(e);
+    }
+
+    @ExceptionHandler(BookingNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND) // 404 Not Found
+    public ErrorResponse handleBookingNotFoundException(BookingNotFound e) {
+        return new ErrorResponse(e);
+    }
 }

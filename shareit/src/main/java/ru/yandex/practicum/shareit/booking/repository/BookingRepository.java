@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import ru.yandex.practicum.shareit.booking.model.Booking;
 import ru.yandex.practicum.shareit.booking.model.BookingStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -48,4 +49,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findFutureByOwner(Long ownerId);
 
     List<Booking> findByItemOwnerIdAndStatusOrderByStartDesc(Long ownerId, BookingStatus status);
+
+    List<Booking> findByItemIdAndBookerIdAndStatusAndEndBefore(
+            Long itemId,
+            Long bookerId,
+            BookingStatus status,
+            LocalDateTime end
+    );
+
+    boolean existsByItemIdAndBookerIdAndEndBefore(long itemId, long bookerId, LocalDateTime end);
 }

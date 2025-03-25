@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.yandex.practicum.shareit.booking.exception.BookingDateException;
+import ru.yandex.practicum.shareit.booking.exception.BookingNotFound;
 import ru.yandex.practicum.shareit.booking.exception.InvalidStatusException;
 import ru.yandex.practicum.shareit.booking.mapper.BookingMapper;
 import ru.yandex.practicum.shareit.booking.model.Booking;
@@ -112,34 +113,48 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private List<Booking> getBookingsByState(Long userId, State state, boolean isUserBookings) {
+        List<Booking> bookings;
+
         switch (state) {
             case ALL:
-                return isUserBookings
+                bookings = isUserBookings
                         ? bookingRepository.findByBookerIdOrderByStartDesc(userId)
                         : bookingRepository.findByItemOwnerIdOrderByStartDesc(userId);
+                break;
             case CURRENT:
-                return isUserBookings
+                bookings = isUserBookings
                         ? bookingRepository.findCurrentByBooker(userId)
                         : bookingRepository.findCurrentByOwner(userId);
+                break;
             case PAST:
-                return isUserBookings
+                bookings = isUserBookings
                         ? bookingRepository.findPastByBooker(userId)
                         : bookingRepository.findPastByOwner(userId);
+                break;
             case FUTURE:
-                return isUserBookings
+                bookings = isUserBookings
                         ? bookingRepository.findFutureByBooker(userId)
                         : bookingRepository.findFutureByOwner(userId);
+                break;
             case WAITING:
-                return isUserBookings
+                bookings = isUserBookings
                         ? bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING)
                         : bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+                break;
             case REJECTED:
-                return isUserBookings
+                bookings = isUserBookings
                         ? bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED)
                         : bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown state: " + state);
         }
+
+        if (bookings.isEmpty()) {
+            throw new BookingNotFound("No bookings found for userId=" + userId + " and state=" + state);
+        }
+
+        return bookings;
     }
 
     private List<Booking> paginate(List<Booking> bookings, int from, int size) {

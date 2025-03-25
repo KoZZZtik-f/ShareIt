@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.yandex.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.yandex.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.yandex.practicum.shareit.booking.mapper.BookingMapper;
 import ru.yandex.practicum.shareit.booking.model.Booking;
 import ru.yandex.practicum.shareit.booking.model.State;
@@ -46,11 +47,13 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDtoResponse> getUserBookings(
-            @RequestParam(defaultValue = "ALL") State state,
+            @RequestParam(value = "state", defaultValue = "ALL") String stateStr,
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
+        State state = convertToStateWithChecking(stateStr);
         List<Booking> bookings = bookingService.getUserBookings(userId, state, from, size);
+
         return bookings.stream()
                 .map(BookingMapper::toDto)
                 .collect(Collectors.toList());
@@ -58,13 +61,29 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDtoResponse> getOwnerBookings(
-            @RequestParam(defaultValue = "ALL") State state,
+            @RequestParam(value = "state", defaultValue = "ALL") String stateStr,
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
+        State state = convertToStateWithChecking(stateStr);
         List<Booking> bookings = bookingService.getOwnerBookings(userId, state, from, size);
+
         return bookings.stream()
                 .map(BookingMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+
+    private static State convertToStateWithChecking(String stateStr) {
+        State state;
+
+        try {
+            state = State.valueOf(stateStr);
+            System.out.println(String.format("Debug %s -> %s", stateStr, state.toString()));
+        } catch (RuntimeException e) {
+            throw new UnsupportedStateException(stateStr);
+        }
+
+        return state;
     }
 }

@@ -77,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
 
     private Booking getBookingById(Long bookingId) {
         return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id " + bookingId));
+                .orElseThrow(() -> new BookingNotFound(bookingId));
     }
 
     private void validateBookingCreation(Item item, Long userId, BookingDtoRequest bookingDtoRequest) {

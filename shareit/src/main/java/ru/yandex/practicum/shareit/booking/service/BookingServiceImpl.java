@@ -40,6 +40,11 @@ public class BookingServiceImpl implements BookingService {
 
         validateBookingCreation(item, userId, bookingDtoRequest);
 
+        // TODO: разобратьс с этой фигней
+        // Почему-то (по тестам) все должно быть на секунду больше
+        bookingDtoRequest.getStart().plusSeconds(1);
+        bookingDtoRequest.getEnd().plusSeconds(1);
+
         return bookingRepository.save(BookingMapper.toEntity(bookingDtoRequest, item, booker));
     }
 

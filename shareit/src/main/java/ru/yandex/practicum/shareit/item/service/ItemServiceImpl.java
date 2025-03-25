@@ -1,8 +1,8 @@
 package ru.yandex.practicum.shareit.item.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.shareit.booking.repository.BookingRepository;
 import ru.yandex.practicum.shareit.exception.PermissionDeniedException;
 import ru.yandex.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.yandex.practicum.shareit.item.model.Comment;
@@ -23,6 +23,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public Item addItem(Item item, long userId) {
@@ -73,8 +74,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Comment addComment(long itemId, String text, long userId) {
-        Item item = getItem(itemId); // Получаем вещь по ID
-        User author = userService.getUserById(userId); // Получаем пользователя по ID
+        // Проверка через BookingRepository вместо BookingService
+        if (!bookingRepository.existsByItemIdAndBookerIdAndEndBefore(itemId, userId, LocalDateTime.now())) {
+            throw new PermissionDeniedException("User has no completed bookings for this item");
+        }
+
+        Item item = getItem(itemId);
+        User author = userService.getUserById(userId);
 
         Comment comment = new Comment();
         comment.setText(text);

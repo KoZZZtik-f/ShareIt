@@ -19,6 +19,7 @@ import ru.yandex.practicum.shareit.item.service.ItemService;
 import ru.yandex.practicum.shareit.user.model.User;
 import ru.yandex.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,5 +163,16 @@ public class BookingServiceImpl implements BookingService {
                 .skip(from)
                 .limit(size)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean hasUserBookedItem(Long itemId, Long userId) {
+        List<Booking> bookings = bookingRepository.findByItemIdAndBookerIdAndStatusAndEndBefore(
+                itemId,
+                userId,
+                BookingStatus.APPROVED,
+                LocalDateTime.now()
+        );
+        return !bookings.isEmpty();
     }
 }

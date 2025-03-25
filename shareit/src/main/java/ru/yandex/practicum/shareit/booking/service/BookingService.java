@@ -12,4 +12,5 @@ public interface BookingService {
     Booking getBooking(Long bookingId, Long userId);
     List<Booking> getUserBookings(Long userId, State state, int from, int size);
     List<Booking> getOwnerBookings(Long ownerId, State state, int from, int size);
+    boolean hasUserBookedItem(Long itemId, Long userId);
 }

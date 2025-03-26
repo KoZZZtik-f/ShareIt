@@ -105,7 +105,8 @@ public class BookingServiceImpl implements BookingService {
 
     private void validateBookingApproval(Booking booking, Long userId) {
         if (!booking.getItem().getOwner().getId().equals(userId)) {
-            throw new PermissionDeniedException("Only owner can approve booking");
+            throw new PermissionDeniedException(String.format("Only owner can approve booking. userId = %d, bookingOwnerId = %d, bookingId = %d",
+                    userId, booking.getItem().getOwner().getId(), booking.getId()));
         }
         if (booking.getStatus() != BookingStatus.WAITING) {
             throw new InvalidStatusException("Booking status cannot be changed");

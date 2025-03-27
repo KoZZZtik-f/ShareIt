@@ -180,18 +180,36 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void deleteUser_ShouldDeleteUser() {
-        // Given
+        // Given: создаём и сохраняем пользователя
         User user = new User();
         user.setName("To Delete");
         user.setEmail("delete@example.com");
         User savedUser = userRepository.save(user);
 
-        // When
+        // убеждаемся, что пользователь сохранён
+        assertThat(userService.getAllUsers(), hasSize(1));
+        assertNotNull(savedUser.getId());
+        Optional<User> savedUserFromDb = userRepository.findById(savedUser.getId());
+        assertTrue(savedUserFromDb.isPresent()
+                && savedUserFromDb.get().equals(savedUser));
+
+        // When: удаляем пользователя
         userService.deleteUser(savedUser.getId());
 
-        // Then
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById(savedUser.getId()));
+        // Then: проверяем, что пользователь действительно удалён
+        // 1. Пытаемся найти пользователя по id
+        Optional<User> deletedUser = userRepository.findById(savedUser.getId());
+        assertFalse(deletedUser.isPresent(), "User should be deleted");
+
+        // 2. Проверяем, что список пользователей не содержит удалённого пользователя
+        List<User> users = userService.getAllUsers();
+        assertThat(users, hasSize(0));
+        assertThat(users, not(hasItem(savedUser)));
+
+        // Дополнительно можно проверить выброс исключения при попытке удаления несуществующего пользователя:
+        assertThrows(UserNotFoundException.class, () -> userService.deleteUser(savedUser.getId()));
     }
 
     @Test

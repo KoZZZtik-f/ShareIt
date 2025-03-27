@@ -14,8 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // метод для проверки email с исключением текущего пользователя
     boolean existsByEmailAndIdNot(String email, Long id);
 
-    // Добавляем кастомный метод
-    @Modifying
+    // кастомный метод
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM User u WHERE u.id = :id")
     int deleteUserById(@Param("id") Long id);
 

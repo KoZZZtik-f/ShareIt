@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.shareit.user.model.User;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
@@ -19,4 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("DELETE FROM User u WHERE u.id = :id")
     int deleteUserById(@Param("id") Long id);
 
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.id IN :ids")
+    int deleteAllByIds(@Param("ids") List<Long> ids);
+
+    Long id(Long id);
 }
